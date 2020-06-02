@@ -395,7 +395,7 @@ public class CyberwareContent
 
         boneUpgrades = new ItemBoneUpgrade("bone_upgrades", EnumSlot.BONE,
                 new String[] { "bonelacing", "boneflex", "bonebattery" });
-        boneUpgrades.setEssenceCost(3, 5);
+        boneUpgrades.setEssenceCost(3, 5, 2);
         boneUpgrades.setWeights(UNCOMMON, RARE, UNCOMMON);
         boneUpgrades.setComponents(
                 NNLUtil.fromArray(new ItemStack[] { new ItemStack(component, 1, 1),

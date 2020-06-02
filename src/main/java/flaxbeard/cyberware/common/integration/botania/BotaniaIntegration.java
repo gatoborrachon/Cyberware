@@ -21,7 +21,7 @@ public class BotaniaIntegration
         
         manaLens = new ItemManaLens("manaseer_lens", ICyberware.EnumSlot.EYES, new String[] { "lens", "link" });
         manaLens.setEssenceCost(1, 1);
-        manaLens.setWeights(CyberwareContent.COMMON);
+        manaLens.setWeights(CyberwareContent.COMMON, CyberwareContent.COMMON);
         manaLens.setComponents(NNLUtil.fromArray(new ItemStack[] { stackManaglass,
                                                                    stackManasteelIngot,
                                                                    new ItemStack(CyberwareContent.component, 1, 6),

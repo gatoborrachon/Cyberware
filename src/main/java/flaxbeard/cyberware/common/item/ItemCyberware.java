@@ -52,6 +52,7 @@ public class ItemCyberware extends ItemCyberwareBase implements ICyberware, ICyb
 	
 	public ItemCyberware setWeights(int... weight)
 	{
+		assert weight.length == Math.max(1, subnames.length);
 		for (int meta = 0; meta < weight.length; meta++)
 		{
 			ItemStack stack = new ItemStack(this, 1, meta);
@@ -65,12 +66,14 @@ public class ItemCyberware extends ItemCyberwareBase implements ICyberware, ICyb
 	
 	public ItemCyberware setEssenceCost(int... essence)
 	{
+		assert essence.length == Math.max(1, subnames.length);
 		this.essence = essence;
 		return this;
 	}
 	
 	public ItemCyberware setComponents(NonNullList<ItemStack>... components)
 	{
+		assert components.length == Math.max(1, subnames.length);
 		NonNullList<NonNullList<ItemStack>> list = NonNullList.create();
 		Collections.addAll(list, components);
 		this.components = list;
