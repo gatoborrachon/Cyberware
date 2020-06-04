@@ -64,6 +64,8 @@ public class ModelTrenchCoat extends ModelBiped
 	{
 		// don't call super as we use a single model for all entities
 		// super.render(entity, limbSwing, limbSwingAmount, ageInTicks,  netHeadYaw, headPitch, scale);
+		setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+		
 		// transfer properties, wrap to original
 		modelBaseParent.swingProgress = swingProgress;
 		modelBaseParent.bipedHead.showModel     = bipedHead.showModel    ;
