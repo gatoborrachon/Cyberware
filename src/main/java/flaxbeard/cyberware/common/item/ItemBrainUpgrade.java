@@ -62,7 +62,7 @@ public class ItemBrainUpgrade extends ItemCyberware implements IMenuItem
             && stack.getItemDamage() == META_CORTICAL_STACK
             && other.getItemDamage() == META_CONSCIOUSNESS_TRANSMITTER;
     }
-
+    
     @SubscribeEvent
     public void handleTeleJam(EnderTeleportEvent event)
     {
