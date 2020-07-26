@@ -14,11 +14,11 @@ import flaxbeard.cyberware.common.entity.EntityCyberZombie;
 
 public class RenderCyberZombie extends RenderZombie
 {
-	
-	private static final ResourceLocation ZOMBIE = new ResourceLocation(Cyberware.MODID + ":textures/models/cyberzombie.png");
-	private static final ResourceLocation HIGHLIGHT = new ResourceLocation(Cyberware.MODID + ":textures/models/cyberzombie_highlight.png");
-	private static final ResourceLocation ZOMBIE_BRUTE = new ResourceLocation(Cyberware.MODID + ":textures/models/cyberzombie_brute.png");
-	private static final ResourceLocation HIGHLIGHT_BRUTE = new ResourceLocation(Cyberware.MODID + ":textures/models/cyberzombie_brute_highlight.png");
+
+	private static final ResourceLocation ZOMBIE = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie.png");
+	private static final ResourceLocation HIGHLIGHT = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie_highlight.png");
+	private static final ResourceLocation ZOMBIE_BRUTE = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie_brute.png");
+	private static final ResourceLocation HIGHLIGHT_BRUTE = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie_brute_highlight.png");
 
 	@SideOnly(Side.CLIENT)
 	public static class LayerZombieHighlight<T extends EntityCyberZombie> implements LayerRenderer<T>
@@ -75,13 +75,13 @@ public class RenderCyberZombie extends RenderZombie
 			return false;
 		}
 	}
-	
+
 	public RenderCyberZombie(RenderManager renderManagerIn)
 	{
 		super(renderManagerIn);
         layerRenderers.add(new LayerZombieHighlight(this));
 	}
-	
+
 	@Override
 	protected ResourceLocation getEntityTexture(EntityZombie entity)
 	{
@@ -92,7 +92,7 @@ public class RenderCyberZombie extends RenderZombie
 		}
 		return ZOMBIE;
 	}
-	
+
 	@Override
 	protected void preRenderCallback(EntityZombie zombie, float partialTickTime)
     {
