@@ -187,9 +187,9 @@ public class ItemBrainUpgrade extends ItemCyberware implements IMenuItem
         }
     }
 
-    private static Map<UUID, Boolean> isContextWorking = new HashMap<>();
-    private static Map<UUID, Boolean> isMatrixWorking = new HashMap<>();
-    private static Map<UUID, Boolean> isRadioWorking = new HashMap<>();
+    private static final Map<UUID, Boolean> isContextWorking = new HashMap<>();
+    private static final Map<UUID, Boolean> isMatrixWorking = new HashMap<>();
+    private static final Map<UUID, Boolean> isRadioWorking = new HashMap<>();
 
     @SubscribeEvent(priority=EventPriority.NORMAL)
     public void handleLivingUpdate(CyberwareUpdateEvent event)
@@ -291,7 +291,7 @@ public class ItemBrainUpgrade extends ItemCyberware implements IMenuItem
         }
     }
 
-    private static ArrayList<String> lastHits = new ArrayList<>();
+    private static final ArrayList<String> lastHits = new ArrayList<>();
 
     @SubscribeEvent(priority=EventPriority.HIGHEST)
     public void handleHurt(LivingAttackEvent event)

@@ -1,5 +1,7 @@
 package flaxbeard.cyberware.client.render;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -14,22 +16,22 @@ import flaxbeard.cyberware.common.entity.EntityCyberZombie;
 
 public class RenderCyberZombie extends RenderZombie
 {
-
+	
 	private static final ResourceLocation ZOMBIE = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie.png");
 	private static final ResourceLocation HIGHLIGHT = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie_highlight.png");
 	private static final ResourceLocation ZOMBIE_BRUTE = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie_brute.png");
 	private static final ResourceLocation HIGHLIGHT_BRUTE = new ResourceLocation(Cyberware.MODID + ":textures/entity/cyberzombie_brute_highlight.png");
-
+	
 	@SideOnly(Side.CLIENT)
 	public static class LayerZombieHighlight<T extends EntityCyberZombie> implements LayerRenderer<T>
 	{
 		private final RenderCyberZombie czRenderer;
-
+		
 		public LayerZombieHighlight(RenderCyberZombie spiderRendererIn)
 		{
 			this.czRenderer = spiderRendererIn;
 		}
-
+		
 		public void doRenderLayer(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
 		{
 			if (entitylivingbaseIn.isBrute())
@@ -43,7 +45,7 @@ public class RenderCyberZombie extends RenderZombie
 			GlStateManager.enableBlend();
 			//GlStateManager.disableAlpha();
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-
+			
 			if (entitylivingbaseIn.isInvisible())
 			{
 				GlStateManager.depthMask(false);
@@ -52,7 +54,7 @@ public class RenderCyberZombie extends RenderZombie
 			{
 				GlStateManager.depthMask(true);
 			}
-
+			
 			int i = 61680;
 			int j = i % 65536;
 			int k = i / 65536;
@@ -75,15 +77,15 @@ public class RenderCyberZombie extends RenderZombie
 			return false;
 		}
 	}
-
+	
 	public RenderCyberZombie(RenderManager renderManagerIn)
 	{
 		super(renderManagerIn);
         layerRenderers.add(new LayerZombieHighlight(this));
 	}
-
+	
 	@Override
-	protected ResourceLocation getEntityTexture(EntityZombie entity)
+	protected ResourceLocation getEntityTexture(@Nonnull final EntityZombie entity)
 	{
 		EntityCyberZombie cz = (EntityCyberZombie) entity;
 		if (cz.isBrute())
@@ -92,9 +94,9 @@ public class RenderCyberZombie extends RenderZombie
 		}
 		return ZOMBIE;
 	}
-
+	
 	@Override
-	protected void preRenderCallback(EntityZombie zombie, float partialTickTime)
+	protected void preRenderCallback(@Nonnull final EntityZombie zombie, float partialTickTime)
     {
 		EntityCyberZombie cz = (EntityCyberZombie) zombie;
         if (cz.height == (1.95F * 1.2F))
@@ -102,5 +104,5 @@ public class RenderCyberZombie extends RenderZombie
             GlStateManager.scale(1.2F, 1.2F, 1.2F);
         }
     }
-
+	
 }
