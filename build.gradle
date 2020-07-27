@@ -11,15 +11,21 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.2"
+        classpath "com.wynprice.cursemaven:CurseMaven:1.2.3"
     }
 
 }
-
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "com.matthewprenger.cursegradle"
+apply plugin: "com.wynprice.cursemaven"
 
 // ***************************************************************************** //
 //  Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
@@ -185,7 +191,8 @@ dependencies {
 //    provided "com.github.azanor:baubles:-SNAPSHOT"
 
     // Matter Overdrive 
-    provided "matteroverdrive:MatterOverdrive-1.12.2:${matteroverdrive_version}:universal"
+    // provided "matteroverdrive:MatterOverdrive-1.12.2:${MatterOverdrive_version}:universal"
+    provided curse.resolve("matteroverdrive", "${MatterOverdrive_fileid}") // "${MatterOverdrive_version}"
 
     // EnderIO with a manual dependency to EnderCore
 //    provided "com.enderio.core:EnderCore:${mc_version}-${endercore_version}:core"
