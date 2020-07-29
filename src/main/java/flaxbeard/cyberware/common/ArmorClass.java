@@ -24,7 +24,7 @@ public enum ArmorClass {
 	LIGHT(),
 	HEAVY;
 	
-	static boolean enableLogging = true;
+	static boolean enableLogging = false;
 	static long timeLastLog_ms;
 	static int maxEntityArmor = 10;
 	static EntityEquipmentSlot[] armorSlots = { EntityEquipmentSlot.FEET, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.HEAD };
