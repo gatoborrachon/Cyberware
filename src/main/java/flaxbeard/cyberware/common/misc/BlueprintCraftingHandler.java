@@ -1,6 +1,7 @@
 package flaxbeard.cyberware.common.misc;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -14,139 +15,107 @@ import flaxbeard.cyberware.api.item.IDeconstructable;
 import flaxbeard.cyberware.common.CyberwareContent;
 import flaxbeard.cyberware.common.item.ItemBlueprint;
 
-public class BlueprintCraftingHandler implements IRecipe
-{
-	static
-	{
+public class BlueprintCraftingHandler implements IRecipe {
+	
+	static {
 		RecipeSorter.register(Cyberware.MODID + ":blueprintCrafting", BlueprintCraftingHandler.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 	
-	private IRecipe realRecipe;
+	private ResourceLocation resourceLocation;
+	private ItemStack itemStackCyberware;
 	
-	public BlueprintCraftingHandler()
-	{
-		this.realRecipe = this;
-	}
-	
-	@Override
-	public ResourceLocation getRegistryName()
-	{
-		return new ResourceLocation(Cyberware.MODID, "blueprintCrafting");
-	}
-	
-	@Override
-	public boolean canFit(int width, int height)
-	{
-		return true;
-	}
-	
-	@Override
-	public IRecipe setRegistryName(ResourceLocation name)
-	{
-		return realRecipe.setRegistryName(name);
-	}
-	
-	@Override
-	public Class<IRecipe> getRegistryType()
-	{
-		return realRecipe.getRegistryType();
-	}
-	
-	@Override
-	public boolean matches(@Nonnull InventoryCrafting inventoryCrafting, @Nonnull World world)
-	{
-		return new BlueprintResult(inventoryCrafting).canCraft;
+	public BlueprintCraftingHandler() {
+		// no operation
 	}
 	
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inventoryCrafting)
-	{
-		return new BlueprintResult(inventoryCrafting).output;
+	public IRecipe setRegistryName(@Nonnull final ResourceLocation resourceLocation) {
+		assert this.resourceLocation == null;
+		this.resourceLocation = resourceLocation;
+		return this;
+	}
+	
+	@Nullable
+	@Override
+	public ResourceLocation getRegistryName() {
+		return resourceLocation;
+	}
+	
+	@Override
+	public boolean canFit(final int width, final int height) {
+		return width * height >= 2;
 	}
 	
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
-	{
+	public Class<IRecipe> getRegistryType() {
+		return IRecipe.class;
+	}
+	
+	@Override
+	public boolean matches(@Nonnull final InventoryCrafting inventoryCrafting, @Nonnull final World world) {
+		return matches(inventoryCrafting);
+	}
+	private boolean matches(@Nonnull final InventoryCrafting inventoryCrafting) {
+		boolean hasBlankBlueprint = false;
+		itemStackCyberware = ItemStack.EMPTY;
+		for (int indexSlot = 0; indexSlot < inventoryCrafting.getSizeInventory(); indexSlot++) {
+			ItemStack itemStackSlot = inventoryCrafting.getStackInSlot(indexSlot);
+			if (!itemStackSlot.isEmpty()) {
+				if ( itemStackSlot.getItem() instanceof IDeconstructable
+				  && itemStackSlot.getCount() == 1 ) {
+					if (itemStackCyberware.isEmpty()) {
+						itemStackCyberware = itemStackSlot;
+					} else {
+						return false;
+					}
+				} else if ( itemStackSlot.getItem() == CyberwareContent.blueprint
+				         && ( itemStackSlot.getTagCompound() == null
+				           || !itemStackSlot.getTagCompound().hasKey("blueprintItem") ) ) {
+					if (!hasBlankBlueprint) {
+						hasBlankBlueprint = true;
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+		return !itemStackCyberware.isEmpty() && hasBlankBlueprint;
+	}
+	
+	@Nonnull
+	@Override
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inventoryCrafting) {
+		if (matches(inventoryCrafting)) {
+			return ItemBlueprint.getBlueprintForItem(itemStackCyberware);
+		} else {
+			return ItemStack.EMPTY;
+		}
+	}
+	
+	@Nonnull
+	@Override
+	public ItemStack getRecipeOutput() {
 		return ItemStack.EMPTY;
 	}
 	
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventoryCrafting)
-	{
-		return new BlueprintResult(inventoryCrafting).remaining;
-	}
-	
-	private class BlueprintResult
-	{
-		private final boolean canCraft;
-		private final NonNullList<ItemStack> remaining;
-		private final ItemStack output;
-		
-		private ItemStack ware;
-		int wareStack = 0;
-		
-		public BlueprintResult(InventoryCrafting inv)
-		{
-			this.ware = ItemStack.EMPTY;
-			this.canCraft = process(inv);
-			if (canCraft)
-			{
-				remaining = NonNullList.create();
-				remaining.add(ware.copy());
-				output = ItemBlueprint.getBlueprintForItem(ware);
-			}
-			else
-			{
-				remaining = NonNullList.create();
-				output = ItemStack.EMPTY;
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inventoryCrafting) {
+		if (!matches(inventoryCrafting)) {
+			return NonNullList.create();
+		}
+		final NonNullList<ItemStack> itemStackResults = NonNullList.withSize(inventoryCrafting.getSizeInventory(), ItemStack.EMPTY);
+		for (int indexSlot = 0; indexSlot < itemStackResults.size(); indexSlot++) {
+			if (itemStackCyberware == inventoryCrafting.getStackInSlot(indexSlot)) {
+				// note: we do need a copy here since caller decreases count on existing instance right after
+				itemStackResults.set(indexSlot, itemStackCyberware.copy());
+				break;
 			}
 		}
-		
-		private boolean process(InventoryCrafting inventoryCrafting)
-		{
-			boolean hasBlankBlueprint = false;
-			for (int indexSlot = 0; indexSlot < inventoryCrafting.getSizeInventory(); indexSlot++)
-			{
-				ItemStack stack = inventoryCrafting.getStackInSlot(indexSlot);
-				if (!stack.isEmpty())
-				{
-					if (stack.getItem() instanceof IDeconstructable)
-					{
-						if (ware.isEmpty())
-						{
-							ware = stack;
-							wareStack = indexSlot;
-						}
-						else
-						{
-							return false;
-						}
-					}
-					else if ( stack.getItem() == CyberwareContent.blueprint
-					       && ( !stack.hasTagCompound()
-					         || !stack.getTagCompound().hasKey("blueprintItem") ) )
-					{
-						if (!hasBlankBlueprint)
-						{
-							hasBlankBlueprint = true;
-						}
-						else
-						{
-							return false;
-						}
-					}
-					else
-					{
-						return false;
-					}
-					
-				}
-			}
-			return !ware.isEmpty() && hasBlankBlueprint;
-		}
+		return itemStackResults;
 	}
-
 }

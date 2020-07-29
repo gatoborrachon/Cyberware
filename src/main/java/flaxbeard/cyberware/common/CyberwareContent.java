@@ -532,7 +532,8 @@ public class CyberwareContent
         );
 
         //GameRegistry.addRecipe(new BlueprintCraftingHandler());
-        RecipeHandler.addRecipe(new BlueprintCraftingHandler());
+        RecipeHandler.addRecipe(new BlueprintCraftingHandler()
+                                        .setRegistryName(new ResourceLocation(Cyberware.MODID, "blueprintCrafting")) );
 
         RecipeHandler.addShapelessOreRecipe(new ItemStack(Items.PAPER),
                 new ItemStack(blueprint, 1, OreDictionary.WILDCARD_VALUE)
