@@ -6,6 +6,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
@@ -79,6 +81,11 @@ public class ItemCybereyes extends ItemCyberware
 		       && entityLivingBase == Minecraft.getMinecraft().player )
 		{
 			isBlind = false;
+		}
+		
+		if (isBlind)
+		{
+			entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 40));
 		}
 	}
 	

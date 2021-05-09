@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -121,6 +122,11 @@ public class EssentialsMissingHandler
 			{
 				entityLivingBase.addPotionEffect(new PotionEffect(CyberwareContent.rejectionEffect, 110, 0, true, false));
 				entityLivingBase.attackEntityFrom(lowessence, 2F);
+			}
+			
+			if (!cyberwareUserData.hasEssential(EnumSlot.EYES))
+			{
+				entityLivingBase.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 40));
 			}
 		}
 		
