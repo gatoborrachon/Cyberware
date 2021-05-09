@@ -78,7 +78,7 @@ public class CyberwareConfig
     
     public static int TESLA_PER_POWER = 1;
     
-    public static int FIST_MINING_LEVEL = 2;
+    public static String FIST_MINING_TOOL_NAME = "minecraft:iron_pickaxe";
 
     public static boolean INT_ENDER_IO = true;
     public static boolean INT_TOUGH_AS_NAILS = true;
@@ -197,7 +197,7 @@ public class CyberwareConfig
         INT_BOTANIA = config.getBoolean("Enable Botania Integration if the mod is Loaded", C_INTEGRATION, INT_BOTANIA, "Requires Botania");
         INT_MATTER_OVERDRIVE = config.getBoolean("Enable Matter Overdrive Integration if the mod is Loaded", C_INTEGRATION, INT_MATTER_OVERDRIVE, "Requires Matter Overdrive");
         
-        FIST_MINING_LEVEL = config.getInt("Configure the mining level for the reinforced fist", C_OTHER, FIST_MINING_LEVEL, 1, 3, "");
+        FIST_MINING_TOOL_NAME = config.getString("Registry name of the mining tool equivalent to the reinforced fist", C_OTHER, FIST_MINING_TOOL_NAME, "");
         
         config.save();
     }

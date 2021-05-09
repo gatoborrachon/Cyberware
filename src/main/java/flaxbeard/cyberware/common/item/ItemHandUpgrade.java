@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import flaxbeard.cyberware.Cyberware;
 import flaxbeard.cyberware.api.ICyberwareUserData;
 import flaxbeard.cyberware.common.CyberwareConfig;
 import net.minecraft.client.Minecraft;
@@ -58,11 +59,12 @@ public class ItemHandUpgrade extends ItemCyberware implements IMenuItem
     {
         super(name, slot, subnames);
         MinecraftForge.EVENT_BUS.register(this);
-        this.tool_level = CyberwareConfig.FIST_MINING_LEVEL == 3
-                        ? Items.DIAMOND_PICKAXE
-                        : CyberwareConfig.FIST_MINING_LEVEL == 2
-                        ? Items.IRON_PICKAXE
-                        : Items.STONE_PICKAXE;
+        Item itemConfig = Item.getByNameOrId(CyberwareConfig.FIST_MINING_TOOL_NAME);
+        if (itemConfig == null) {
+            Cyberware.logger.error(String.format("Unable to find item with id %s, check your configuration. Defaulting fist mining tool to Iron pickaxe.", CyberwareConfig.FIST_MINING_TOOL_NAME));
+            itemConfig = Items.IRON_PICKAXE;
+        }
+        this.tool_level = itemConfig;
     }
 
     @Override
