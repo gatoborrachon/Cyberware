@@ -335,19 +335,13 @@ public class EssentialsMissingHandlerClient
 					settings.mainHand = EnumHandSide.LEFT;
 					settings.sendSettingsToServer();
 				}
-
-				if (!missingArm)
-				{
-					missingArm = true;
-				}
+				
+				missingArm = true;
 				stillMissingArm = true;
 				
 				if (!hasLeftArm)
 				{
-					if (!missingSecondArm)
-					{
-						missingSecondArm = true;
-					}
+					missingSecondArm = true;
 					stillMissingSecondArm = true;
 				}
 			}
@@ -359,19 +353,20 @@ public class EssentialsMissingHandlerClient
 					settings.mainHand = EnumHandSide.RIGHT;
 					settings.sendSettingsToServer();
 				}
-
-				if (!missingArm)
-				{
-					missingArm = true;
-				}
+				
+				missingArm = true;
 				stillMissingArm = true;
 			}
 
-			if (!stillMissingArm && oldHand != null)
+			if (!stillMissingArm)
 			{
 				missingArm = false;
-				settings.mainHand = oldHand;
-				settings.sendSettingsToServer();
+				if (oldHand != null)
+				{
+					settings.mainHand = oldHand;
+					settings.sendSettingsToServer();
+					oldHand = null;
+				}
 			}
 
 			if (!stillMissingSecondArm)
