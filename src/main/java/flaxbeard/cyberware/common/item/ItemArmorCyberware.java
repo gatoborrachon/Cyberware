@@ -2,9 +2,12 @@ package flaxbeard.cyberware.common.item;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.BlockCauldron;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -12,7 +15,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -187,5 +197,25 @@ public class ItemArmorCyberware extends ItemArmor implements IDeconstructable
 				super.getSubItems(tab, list);
 			}
 		}
+	}
+	
+	@Nonnull
+	@Override
+	public EnumActionResult onItemUse(@Nonnull EntityPlayer entityPlayer, @Nonnull World world, @Nonnull BlockPos blockPos,
+	                                  @Nonnull EnumHand hand, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ) {
+		final IBlockState blockState = world.getBlockState(blockPos);
+		final ItemStack itemStack = entityPlayer.getHeldItem(hand);
+		if ( !world.isRemote
+		  && blockState.getBlock() instanceof BlockCauldron
+		  && hasColor(itemStack) ) {
+			final int waterLevel = blockState.getValue(BlockCauldron.LEVEL);
+			if (waterLevel > 0) {
+				removeColor(itemStack);
+				((BlockCauldron) blockState.getBlock()).setWaterLevel(world, blockPos, blockState, waterLevel - 1);
+				entityPlayer.addStat(StatList.ARMOR_CLEANED);
+				return EnumActionResult.SUCCESS;
+			}
+		}
+		return super.onItemUse(entityPlayer, world, blockPos, hand, facing, hitX, hitY, hitZ);
 	}
 }
