@@ -42,7 +42,7 @@ public class ItemHandUpgrade extends ItemCyberware implements IMenuItem
     public static final int META_CLAWS                      = 1;
     public static final int META_MINING                     = 2;
     
-    private final Item tool_level;
+    private static Item itemTool;
     
     private static final UUID uuidClawsDamageAttribute = UUID.fromString("63c32801-94fb-40d4-8bd2-89135c1e44b1");
     private static final HashMultimap<String, AttributeModifier> multimapClawsDamageAttribute;
@@ -59,12 +59,6 @@ public class ItemHandUpgrade extends ItemCyberware implements IMenuItem
     {
         super(name, slot, subnames);
         MinecraftForge.EVENT_BUS.register(this);
-        Item itemConfig = Item.getByNameOrId(CyberwareConfig.FIST_MINING_TOOL_NAME);
-        if (itemConfig == null) {
-            Cyberware.logger.error(String.format("Unable to find item with id %s, check your configuration. Defaulting fist mining tool to Iron pickaxe.", CyberwareConfig.FIST_MINING_TOOL_NAME));
-            itemConfig = Items.IRON_PICKAXE;
-        }
-        this.tool_level = itemConfig;
     }
 
     @Override
@@ -81,6 +75,17 @@ public class ItemHandUpgrade extends ItemCyberware implements IMenuItem
         return other.getItem() == this;
     }
 
+    private ItemStack getItemStackTool() {
+        if (itemTool == null) {
+            Item itemConfig = Item.getByNameOrId(CyberwareConfig.FIST_MINING_TOOL_NAME);
+            if (itemConfig == null) {
+                Cyberware.logger.error(String.format("Unable to find item with id %s, check your configuration. Defaulting fist mining tool to Iron pickaxe.", CyberwareConfig.FIST_MINING_TOOL_NAME));
+                itemConfig = Items.IRON_PICKAXE;
+            }
+            itemTool = itemConfig;
+        }
+        return new ItemStack(itemTool);
+    }
     @SubscribeEvent(priority=EventPriority.NORMAL)
     public void handleLivingUpdate(CyberwareUpdateEvent event)
     {
@@ -178,8 +183,8 @@ public class ItemHandUpgrade extends ItemCyberware implements IMenuItem
           && !itemStackMining.isEmpty()
           && entityPlayer.getHeldItemMainhand().isEmpty() )
         {
-            ItemStack pick = new ItemStack(tool_level);
-            if (pick.canHarvestBlock(event.getTargetBlock()))
+            ItemStack itemStackTool = getItemStackTool();
+            if (itemStackTool.canHarvestBlock(event.getTargetBlock()))
             {
                 event.setCanHarvest(true);
             }
@@ -201,8 +206,8 @@ public class ItemHandUpgrade extends ItemCyberware implements IMenuItem
           && !itemStackMining.isEmpty()
           && entityPlayer.getHeldItemMainhand().isEmpty() )
         {
-            ItemStack pick = new ItemStack(tool_level);
-            event.setNewSpeed(event.getNewSpeed() * pick.getDestroySpeed(entityPlayer.world.getBlockState(event.getPos())));
+            final ItemStack itemStackTool = getItemStackTool();
+            event.setNewSpeed(event.getNewSpeed() * itemStackTool.getDestroySpeed(entityPlayer.world.getBlockState(event.getPos())));
         }
     }
 
