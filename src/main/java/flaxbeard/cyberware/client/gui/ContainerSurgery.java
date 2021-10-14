@@ -12,6 +12,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import flaxbeard.cyberware.api.CyberwareAPI;
 import flaxbeard.cyberware.api.item.ICyberware.EnumSlot;
 import flaxbeard.cyberware.common.block.tile.TileEntitySurgery;
+import flaxbeard.cyberware.common.item.ItemBodyPartDamaged;
 import flaxbeard.cyberware.common.lib.LibConstants;
 
 public class ContainerSurgery extends Container
@@ -114,8 +115,9 @@ public class ContainerSurgery extends Container
 			}
 			
 			
-			return !doesItemConflict(stack)
-			    && areRequirementsFulfilled(stack);
+			return (!doesItemConflict(stack)
+			     && areRequirementsFulfilled(stack) 
+			     && !(stack.getItem() instanceof ItemBodyPartDamaged));
 		}
 		
 		public boolean doesItemConflict(@Nonnull ItemStack stack)

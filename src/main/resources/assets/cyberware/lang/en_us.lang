@@ -19,6 +19,7 @@ item.cyberware.body_part.brain.name=Human Brain
 item.cyberware.body_part.eyes.name=Human Eyes
 item.cyberware.body_part.heart.name=Human Heart
 item.cyberware.body_part.lungs.name=Human Lungs
+item.cyberware.body_part_damaged.lungs.name=Damaged Human Lungs
 item.cyberware.body_part.stomach.name=Human Stomach
 item.cyberware.body_part.skin.name=Human Skin
 item.cyberware.body_part.muscles.name=Human Muscles

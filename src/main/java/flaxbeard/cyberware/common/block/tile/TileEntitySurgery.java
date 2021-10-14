@@ -19,6 +19,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.ItemStackHandler;
 import flaxbeard.cyberware.Cyberware;
 import flaxbeard.cyberware.api.CyberwareAPI;
@@ -83,7 +84,23 @@ public class TileEntitySurgery extends TileEntity implements ITickable
 					{
 						discardSlots[slot.ordinal() * LibConstants.WARE_PER_SLOT + indexSlot] = doesItemConflict(toPut, slot, indexSlot);
 					}
-					slotsPlayer.setStackInSlot(slot.ordinal() * LibConstants.WARE_PER_SLOT + indexSlot, toPut);
+					
+					if(Loader.isModLoaded("hbm")) {
+						//NTM Compat
+						//If you have a Healthy lung and high levels of BlackLung and Mesothelioma, you will have a Damaged lung instead
+						if ((toPut.isItemEqual(new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part"),1,3))) && ((com.hbm.capability.HbmLivingProps.getData(entityLivingBase).getBlacklung() >= com.hbm.capability.HbmLivingCapability.EntityHbmProps.maxBlacklung/2)||(com.hbm.capability.HbmLivingProps.getData(entityLivingBase).getAsbestos() >= com.hbm.capability.HbmLivingCapability.EntityHbmProps.maxAsbestos/2))) {
+							slotsPlayer.setStackInSlot(slot.ordinal() * LibConstants.WARE_PER_SLOT + indexSlot, new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part_damaged"),1));
+						} 
+						//If you have a damaged lung but you lowered your levels of BlackLung and Mesothelioma, you will receive a Healthy Lung
+						else if ((toPut.isItemEqual(new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part_damaged")))) && ((com.hbm.capability.HbmLivingProps.getData(entityLivingBase).getBlacklung() <= com.hbm.capability.HbmLivingCapability.EntityHbmProps.maxBlacklung/2)&&(com.hbm.capability.HbmLivingProps.getData(entityLivingBase).getAsbestos() <= com.hbm.capability.HbmLivingCapability.EntityHbmProps.maxAsbestos/2))) { 
+						slotsPlayer.setStackInSlot(slot.ordinal() * LibConstants.WARE_PER_SLOT + indexSlot, new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part"),1,3));
+						} else {
+							slotsPlayer.setStackInSlot(slot.ordinal() * LibConstants.WARE_PER_SLOT + indexSlot, toPut);
+						}
+					} else {
+						slotsPlayer.setStackInSlot(slot.ordinal() * LibConstants.WARE_PER_SLOT + indexSlot, toPut);
+					}
+
 				}
 				updateEssential(slot);
 			}
@@ -412,6 +429,7 @@ public class TileEntitySurgery extends TileEntity implements ITickable
 	@Override
 	public void update()
 	{
+
 		if (inProgress && progressTicks < 80)
 		{
 			ICyberwareUserData cyberwareUserData = CyberwareAPI.getCapabilityOrNull(targetEntity);
@@ -514,9 +532,21 @@ public class TileEntitySurgery extends TileEntity implements ITickable
 						
 						if (itemStackToSet.getCount() < maxSize)
 						{
-							int numToShift = Math.min(maxSize - itemStackToSet.getCount(), itemStackPlayer.getCount());
-							itemStackPlayer.shrink(numToShift);
-							itemStackToSet.grow(numToShift);
+							/*if(Loader.isModLoaded("hbm")) {
+								if (itemStackPlayer.isItemEqual(new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part"),1,3)) && itemStackToSet.isItemEqual(new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part_damaged")))) {
+									int numToShift = Math.min(maxSize - itemStackToSet.getCount(), itemStackPlayer.getCount());
+									itemStackPlayer.shrink(numToShift);
+									slotsPlayer.setStackInSlot(slot.ordinal() * LibConstants.WARE_PER_SLOT + indexCyberware, new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part_damaged"),1));
+								} else {
+									int numToShift = Math.min(maxSize - itemStackToSet.getCount(), itemStackPlayer.getCount());
+									itemStackPlayer.shrink(numToShift);
+									itemStackToSet.grow(numToShift);
+								}
+							} else {*/
+								int numToShift = Math.min(maxSize - itemStackToSet.getCount(), itemStackPlayer.getCount());
+								itemStackPlayer.shrink(numToShift);
+								itemStackToSet.grow(numToShift);
+							//}
 						}
 					}
 					
@@ -571,6 +601,15 @@ public class TileEntitySurgery extends TileEntity implements ITickable
 		if (entityLivingBase instanceof EntityPlayer)
 		{
 			EntityPlayer entityPlayer = ((EntityPlayer) entityLivingBase);
+			
+			if(Loader.isModLoaded("hbm")) {
+				//NTM Compat
+				//If you extracted a Damaged lung, you will reset your values of BlackLung and Mesothelioma
+				if ((stack.isItemEqual(new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part_damaged")))) && ((com.hbm.capability.HbmLivingProps.getData(entityLivingBase).getBlacklung() >= com.hbm.capability.HbmLivingCapability.EntityHbmProps.maxBlacklung/2)||(com.hbm.capability.HbmLivingProps.getData(entityLivingBase).getAsbestos() >= com.hbm.capability.HbmLivingCapability.EntityHbmProps.maxAsbestos/2))) {
+					com.hbm.capability.HbmLivingProps.getData(entityLivingBase).setBlacklung(0);
+					com.hbm.capability.HbmLivingProps.getData(entityLivingBase).setAsbestos(0);
+				}
+			}
 			flag = !entityPlayer.inventory.addItemStackToInventory(stack);
 		}
 		

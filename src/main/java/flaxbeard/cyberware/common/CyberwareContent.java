@@ -48,6 +48,7 @@ import flaxbeard.cyberware.common.item.ItemArmUpgrade;
 import flaxbeard.cyberware.common.item.ItemArmorCyberware;
 import flaxbeard.cyberware.common.item.ItemBlueprint;
 import flaxbeard.cyberware.common.item.ItemBodyPart;
+import flaxbeard.cyberware.common.item.ItemBodyPartDamaged;
 import flaxbeard.cyberware.common.item.ItemBoneUpgrade;
 import flaxbeard.cyberware.common.item.ItemBrainUpgrade;
 import flaxbeard.cyberware.common.item.ItemCreativeBattery;
@@ -108,6 +109,7 @@ public class CyberwareContent
     public static Item katana;
 
     public static Item bodyPart;
+    public static Item bodyPartDamaged;
     public static ItemCyberware cybereyes;
     public static ItemCyberware cybereyeUpgrades;
     public static ItemCyberware eyeUpgrades;
@@ -221,6 +223,10 @@ public class CyberwareContent
         bodyPart = new ItemBodyPart("body_part",
                 new EnumSlot[] { EnumSlot.EYES, EnumSlot.CRANIUM, EnumSlot.HEART, EnumSlot.LUNGS, EnumSlot.LOWER_ORGANS, EnumSlot.SKIN, EnumSlot.MUSCLE, EnumSlot.BONE, EnumSlot.ARM, EnumSlot.ARM, EnumSlot.LEG, EnumSlot.LEG },
                 new String[] { "eyes", "brain", "heart", "lungs", "stomach", "skin", "muscles", "bones", "arm_left", "arm_right", "leg_left", "leg_right"});
+
+        bodyPartDamaged = new ItemBodyPartDamaged("body_part_damaged",
+                new EnumSlot[] {EnumSlot.LUNGS},// EnumSlot.EYES, EnumSlot.CRANIUM, EnumSlot.HEART, EnumSlot.LUNGS, EnumSlot.LOWER_ORGANS, EnumSlot.SKIN, EnumSlot.MUSCLE, EnumSlot.BONE, EnumSlot.ARM, EnumSlot.ARM, EnumSlot.LEG, EnumSlot.LEG },
+                new String[] {"lungs"});// "eyes", "brain", "heart", "lungs", "stomach", "skin", "muscles", "bones", "arm_left", "arm_right", "leg_left", "leg_right"});
 
 
         cybereyes = new ItemCybereyes("cybereyes", EnumSlot.EYES);

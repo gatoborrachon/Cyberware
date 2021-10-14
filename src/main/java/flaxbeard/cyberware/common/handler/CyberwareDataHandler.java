@@ -1,9 +1,13 @@
 package flaxbeard.cyberware.common.handler;
 
 import javax.annotation.Nonnull;
+
+import com.animania.addons.farm.common.item.ItemCarvingKnife;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -13,6 +17,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -30,6 +35,7 @@ import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -47,6 +53,7 @@ import flaxbeard.cyberware.common.CyberwareContent;
 import flaxbeard.cyberware.common.CyberwareContent.ZombieItem;
 import flaxbeard.cyberware.common.block.tile.TileEntityBeacon;
 import flaxbeard.cyberware.common.entity.EntityCyberZombie;
+import flaxbeard.cyberware.common.item.ItemCyberware;
 import flaxbeard.cyberware.common.lib.LibConstants;
 import flaxbeard.cyberware.common.network.CyberwarePacketHandler;
 import flaxbeard.cyberware.common.network.CyberwareSyncPacket;
@@ -172,6 +179,23 @@ public class CyberwareDataHandler
 					}
 					cyberwareUserData.resetWare(entityPlayer);
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void handleVillagerDrops(LivingDeathEvent event)
+	{
+		EntityLivingBase killedVillage = event.getEntityLiving();
+		EntityPlayer killer = (EntityPlayer) event.getSource().getImmediateSource();
+		if (killedVillage instanceof EntityVillager && killer != null)
+		{
+			if((killer instanceof EntityPlayer) && (killer.getHeldItemMainhand().getItem() instanceof ItemCarvingKnife)) {
+				int randomBodyPart = new Random().nextInt(7);
+				ItemStack bodyPartToDrop = new ItemStack(ItemCyberware.getByNameOrId("cyberware:body_part"),1,randomBodyPart);
+				EntityItem entityItem = new EntityItem(killedVillage.world, killedVillage.posX, killedVillage.posY, killedVillage.posZ, bodyPartToDrop);
+				killedVillage.world.spawnEntity(entityItem);
+				killer.getHeldItemMainhand().attemptDamageItem(50, null, (EntityPlayerMP)killer);
 			}
 		}
 	}
